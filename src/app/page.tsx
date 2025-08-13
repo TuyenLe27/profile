@@ -83,7 +83,7 @@ export default function Home() {
   const experiences: Experience[] = [
     {
       role: "Fullstack Developer",
-      company: "Tech Startup ABC",
+      company: "Tech Startup",
       duration: "2023 - Hiện tại",
       description:
         "Phát triển ứng dụng web với Next.js và Node.js, tích hợp API và tối ưu hiệu suất.",
