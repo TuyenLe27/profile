@@ -26,7 +26,7 @@ export default function Projects() {
       technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
       demoLink: "https://your-portfolio.com",
       sourceLink: "https://github.com/your-username/portfolio",
-      image: "https://source.unsplash.com/random/800x600?portfolio",
+      image: "https://picsum.photos/800/600?random=1", // Thay Unsplash bằng Picsum
     },
     {
       name: "E-commerce App",
@@ -34,7 +34,7 @@ export default function Projects() {
       technologies: ["React", "Node.js", "MongoDB", "Stripe"],
       demoLink: "https://your-ecommerce-demo.com",
       sourceLink: "https://github.com/your-username/ecommerce",
-      image: "https://source.unsplash.com/random/800x600?ecommerce",
+      image: "https://picsum.photos/800/600?random=2",
     },
     {
       name: "Chat App",
@@ -42,7 +42,7 @@ export default function Projects() {
       technologies: ["React", "Socket.io", "Node.js", "Express"],
       demoLink: "https://your-chat-app-demo.com",
       sourceLink: "https://github.com/your-username/chat-app",
-      image: "https://source.unsplash.com/random/800x600?chat",
+      image: "https://picsum.photos/800/600?random=3",
     },
     {
       name: "Task Management Tool",
@@ -50,7 +50,7 @@ export default function Projects() {
       technologies: ["Next.js", "TypeScript", "PostgreSQL", "Prisma"],
       demoLink: "https://your-task-manager-demo.com",
       sourceLink: "https://github.com/your-username/task-manager",
-      image: "https://source.unsplash.com/random/800x600?task",
+      image: "https://picsum.photos/800/600?random=4",
     },
     {
       name: "Blog Platform",
@@ -58,7 +58,7 @@ export default function Projects() {
       technologies: ["Next.js", "MDX", "Vercel", "Disqus"],
       demoLink: "https://your-blog-demo.com",
       sourceLink: "https://github.com/your-username/blog",
-      image: "https://source.unsplash.com/random/800x600?blog",
+      image: "https://picsum.photos/800/600?random=5",
     },
     {
       name: "Weather Dashboard",
@@ -66,7 +66,7 @@ export default function Projects() {
       technologies: ["React", "TypeScript", "Chart.js", "OpenWeather API"],
       demoLink: "https://your-weather-demo.com",
       sourceLink: "https://github.com/your-username/weather-dashboard",
-      image: "https://source.unsplash.com/random/800x600?weather",
+      image: "https://picsum.photos/800/600?random=6",
     },
   ], []); // Dependencies rỗng vì projects là tĩnh
 
@@ -155,10 +155,13 @@ export default function Projects() {
                 {/* Project Image */}
                 <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4">
                   <Image
-                    src={project.image ?? "https://source.unsplash.com/random/800x600?project"}
+                    src={project.image ?? "/images/fallback.jpg"} // Fallback nếu ảnh lỗi
                     alt={project.name}
-                    fill
+                    width={800}
+                    height={600}
                     className="object-cover"
+                    placeholder="blur"
+                    blurDataURL="/images/fallback.jpg" // Ảnh placeholder
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     priority={index < 3}
                   />

@@ -1,10 +1,9 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { FaPaperPlane } from "react-icons/fa";
+import { useForm } from "react-hook-form";
+import { FaPaperPlane, FaEnvelope, FaLinkedin, FaGithub } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // CSS cho toast
+import { useState } from "react";
 
 // Định nghĩa interface cho TypeScript
 interface FormData {
@@ -15,57 +14,26 @@ interface FormData {
 }
 
 export default function ContactForm() {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>();
+  const [showModal, setShowModal] = useState<"success" | "error" | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
+  const onSubmit = async (data: FormData) => {
     try {
       await emailjs.send(
         "service_1zndz05",
         "template_y2zatpp",
-        formData,
+        data,
         "QJzdE1CZp1gdM3deB"
       );
-      toast.success("Đã gửi! Cảm ơn bạn đã liên hệ.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "dark",
-      });
-      setFormData({ name: "", email: "", message: "" });
+      setShowModal("success");
+      reset();
     } catch {
-      toast.error("Lỗi khi gửi, thử lại sau!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "dark",
-      });
-    } finally {
-      setIsSubmitting(false);
+      setShowModal("error");
     }
   };
 
   return (
     <section id="contact" className="max-w-3xl mx-auto px-6 py-16">
-      {/* Thêm ToastContainer để hiển thị toast */}
-      <ToastContainer />
       <motion.h1
         className="text-4xl sm:text-5xl font-bold mb-6 text-teal-400 text-center"
         initial={{ opacity: 0, y: 20 }}
@@ -76,46 +44,37 @@ export default function ContactForm() {
       </motion.h1>
 
       <motion.div
-        className="space-y-4 text-lg text-gray-300 mb-8 text-center"
+        className="flex justify-center gap-6 text-lg text-gray-300 mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        <p>
-          Email:{" "}
-          <a
-            href="mailto:letuyen2k6@gmail.com"
-            className="text-teal-400 hover:underline"
-          >
-            letuyen2k6@gmail.com
-          </a>
-        </p>
-        <p>
-          LinkedIn:{" "}
-          <a
-            href="https://www.linkedin.com/in/le-tuyen-66a5ba37a/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-teal-400 hover:underline"
-          >
-            linkedin.com/in/le-tuyen-66a5ba37a
-          </a>
-        </p>
-        <p>
-          GitHub:{" "}
-          <a
-            href="https://github.com/TuyenLe27"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-teal-400 hover:underline"
-          >
-            github.com/TuyenLe27
-          </a>
-        </p>
+        <a
+          href="mailto:letuyen2k6@gmail.com"
+          className="flex items-center gap-2 text-teal-400 hover:underline"
+        >
+          <FaEnvelope /> Email
+        </a>
+        <a
+          href="https://www.linkedin.com/in/le-tuyen-66a5ba37a/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-teal-400 hover:underline"
+        >
+          <FaLinkedin /> LinkedIn
+        </a>
+        <a
+          href="https://github.com/TuyenLe27"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-teal-400 hover:underline"
+        >
+          <FaGithub /> GitHub
+        </a>
       </motion.div>
 
       <motion.form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="bg-gray-800 p-6 rounded-xl shadow-lg space-y-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -124,42 +83,31 @@ export default function ContactForm() {
         <div>
           <label className="block text-gray-300 mb-2">Họ Tên</label>
           <input
-            type="text"
-            name="name"
-            placeholder="Nhập họ tên của bạn"
-            value={formData.name}
-            onChange={handleChange}
+            {...register("name", { required: "Vui lòng nhập họ tên" })}
             className="w-full px-4 py-2 rounded-lg bg-gray-900 border border-gray-700 text-white focus:border-teal-400 focus:ring focus:ring-teal-500 outline-none transition"
-            required
           />
+          {errors.name && <p className="text-red-400 mt-1">{errors.name.message}</p>}
         </div>
-
         <div>
           <label className="block text-gray-300 mb-2">Email</label>
           <input
-            type="email"
-            name="email"
-            placeholder="Nhập email của bạn"
-            value={formData.email}
-            onChange={handleChange}
+            {...register("email", {
+              required: "Vui lòng nhập email",
+              pattern: { value: /^\S+@\S+$/i, message: "Email không hợp lệ" },
+            })}
             className="w-full px-4 py-2 rounded-lg bg-gray-900 border border-gray-700 text-white focus:border-teal-400 focus:ring focus:ring-teal-500 outline-none transition"
-            required
           />
+          {errors.email && <p className="text-red-400 mt-1">{errors.email.message}</p>}
         </div>
-
         <div>
           <label className="block text-gray-300 mb-2">Tin Nhắn</label>
           <textarea
-            name="message"
-            placeholder="Viết tin nhắn của bạn..."
-            value={formData.message}
-            onChange={handleChange}
+            {...register("message", { required: "Vui lòng nhập tin nhắn" })}
             rows={5}
             className="w-full px-4 py-2 rounded-lg bg-gray-900 border border-gray-700 text-white focus:border-teal-400 focus:ring focus:ring-teal-500 outline-none transition resize-none"
-            required
           />
+          {errors.message && <p className="text-red-400 mt-1">{errors.message.message}</p>}
         </div>
-
         <button
           type="submit"
           disabled={isSubmitting}
@@ -170,6 +118,32 @@ export default function ContactForm() {
           <FaPaperPlane /> {isSubmitting ? "Đang gửi..." : "Gửi Tin Nhắn"}
         </button>
       </motion.form>
+
+      {showModal && (
+        <motion.div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="bg-gray-800 p-8 rounded-xl max-w-md">
+            <h2 className="text-2xl font-bold text-teal-400">
+              {showModal === "success" ? "Gửi Thành Công" : "Gửi Thất Bại"}
+            </h2>
+            <p className="text-gray-300 mt-2">
+              {showModal === "success"
+                ? "Cảm ơn bạn đã liên hệ! Tôi sẽ phản hồi sớm nhất có thể."
+                : "Lỗi khi gửi, thử lại sau!"}
+            </p>
+            <button
+              onClick={() => setShowModal(null)}
+              className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-full"
+            >
+              Đóng
+            </button>
+          </div>
+        </motion.div>
+      )}
     </section>
   );
 }
