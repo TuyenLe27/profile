@@ -3,13 +3,15 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // CSS cho toast
 
 // Định nghĩa interface cho TypeScript
 interface FormData {
   name: string;
   email: string;
   message: string;
-  [key: string]: string; // Index signature để tương thích với Record<string, unknown>
+  [key: string]: string;
 }
 
 export default function ContactForm() {
@@ -18,7 +20,6 @@ export default function ContactForm() {
     email: "",
     message: "",
   });
-  const [status, setStatus] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -28,19 +29,34 @@ export default function ContactForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setStatus("");
 
     try {
       await emailjs.send(
-        "service_1zndz05", // Service ID từ bạn
-        "template_y2zatpp", // Template ID từ bạn
+        "service_1zndz05",
+        "template_y2zatpp",
         formData,
-        "QJzdE1CZp1gdM3deB" // Public Key từ bạn
+        "QJzdE1CZp1gdM3deB"
       );
-      setStatus("Đã gửi! Cảm ơn bạn đã liên hệ.");
+      toast.success("Đã gửi! Cảm ơn bạn đã liên hệ.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
       setFormData({ name: "", email: "", message: "" });
     } catch {
-      setStatus("Lỗi khi gửi, thử lại sau!");
+      toast.error("Lỗi khi gửi, thử lại sau!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -48,6 +64,8 @@ export default function ContactForm() {
 
   return (
     <section id="contact" className="max-w-3xl mx-auto px-6 py-16">
+      {/* Thêm ToastContainer để hiển thị toast */}
+      <ToastContainer />
       <motion.h1
         className="text-4xl sm:text-5xl font-bold mb-6 text-teal-400 text-center"
         initial={{ opacity: 0, y: 20 }}
@@ -151,19 +169,6 @@ export default function ContactForm() {
         >
           <FaPaperPlane /> {isSubmitting ? "Đang gửi..." : "Gửi Tin Nhắn"}
         </button>
-
-        {status && (
-          <motion.p
-            className={`text-center ${
-              status.includes("Lỗi") ? "text-red-400" : "text-teal-300"
-            }`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            {status}
-          </motion.p>
-        )}
       </motion.form>
     </section>
   );
