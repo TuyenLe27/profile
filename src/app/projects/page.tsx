@@ -40,8 +40,8 @@ export default function Projects() {
       name: "Chat App",
       desc: "Ứng dụng trò chuyện thời gian thực sử dụng Socket.io, hỗ trợ tin nhắn văn bản, emoji, và thông báo đẩy. Được triển khai với backend Node.js mạnh mẽ.",
       technologies: ["React", "Socket.io", "Node.js", "Express"],
-      demoLink: "https://your-chat-app-demo.com",
-      sourceLink: "https://github.com/your-username/chat-app",
+      demoLink: "https://chatapptlv27.netlify.app/",
+      sourceLink: "https://github.com/TuyenLe27",
       image: "https://picsum.photos/800/600?random=3",
     },
     {
